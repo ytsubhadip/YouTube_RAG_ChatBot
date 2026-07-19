@@ -1,11 +1,16 @@
-# Import the function from your custom module
-from Youtube_extractor import extract_video_text
+from __future__ import annotations
 
-# Example YouTube URL
-url = "https://youtu.be/zVHOF-Mc_xU?si=drF0yhDq6EqHqs1L"
+from src.rag_pipeline import answer_question, build_vectorstore_for_video
 
-# Fetch the text (it will automatically route to the right method)
-video_text = extract_video_text(url)
+VIDEO_URL = "https://youtu.be/zVHOF-Mc_xU?si=drF0yhDq6EqHqs1L"
+QUESTION = "Who is the principal of ILEAD Kolkata?"
 
-print("\n--- Final Extracted Text ---")
-print(video_text)
+
+if __name__ == "__main__":
+    try:
+        build_vectorstore_for_video(VIDEO_URL)
+        answer = answer_question(VIDEO_URL, QUESTION)
+        print("\n--- RAG Answer ---")
+        print(answer)
+    except Exception as exc:
+        print(f"Pipeline failed: {exc}")

@@ -1,13 +1,16 @@
 import os
+import re
 from youtube_transcript_api import YouTubeTranscriptApi
 from yt_dlp import YoutubeDL
 from faster_whisper import WhisperModel
 
-def _get_fast_transcript(video_id):
+
+def _get_fast_transcript(video_id: str) -> str | None:
     """Attempt to get the transcript using YouTube's built-in captions."""
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
-        return " ".join([item['text'] for item in transcript_list])
+        api = YouTubeTranscriptApi()
+        transcript = api.fetch(video_id, languages=("en", "hi"))
+        return " ".join([item.text for item in transcript])
     except Exception as e:
         print(f"Fast transcript failed: {e}")
         return None
@@ -43,21 +46,23 @@ def _get_whisper_transcript(video_url):
         
     return full_text
 
-def extract_video_text(video_url):
+def extract_video_text(video_url: str) -> str | None:
     """
-    Main function to extract text from a YouTube URL.
+    Main function to extract text from a YouTube URL or video ID.
     Tries the fast API first, falls back to Whisper AI if needed.
     """
-    # Extract the 11-character video ID from standard YouTube URLs
-    video_id = video_url.split("v=")[-1].split("&")[0]
-    
+    video_id_match = re.search(r"(?:v=|youtu\.be/)([A-Za-z0-9_-]{11})", video_url)
+    if video_id_match:
+        video_id = video_id_match.group(1)
+    elif len(video_url) >= 11 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_url):
+        video_id = video_url
+    else:
+        video_id = video_url.split("v=")[-1].split("&")[0][:11]
+
     print(f"Processing video: {video_id}")
-    
-    # Attempt Approach 1 (Fast)
+
     text = _get_fast_transcript(video_id)
-    
-    # If Approach 1 fails, trigger Approach 2 (Fallback)
     if text is None:
         text = _get_whisper_transcript(video_url)
-        
+
     return text

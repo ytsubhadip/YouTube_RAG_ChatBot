@@ -10,8 +10,8 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_ollama import ChatOllama
 
-from src.Youtube_extractor import extract_video_text
-from src.TextSpllitor import prepare_transcript_for_vectorstore
+from .Youtube_extractor import extract_video_text
+from .TextSpllitor import prepare_transcript_for_vectorstore
 
 DEFAULT_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 DEFAULT_OLLAMA_MODEL = "llama3.1:8b"
@@ -98,7 +98,11 @@ def answer_question(video_url: str, question: str, base_dir: str = "vectorstores
         input_variables=["context", "question"],
         template=PROMPT_TEMPLATE,
     )
-    llm = ChatOllama(model=DEFAULT_OLLAMA_MODEL, temperature=0)
+    llm = ChatOllama(
+        model=DEFAULT_OLLAMA_MODEL,
+        temperature=0,
+        num_gpu=0,
+    )
 
     def _format_docs(docs: list[Document]) -> str:
         return "\n\n".join(doc.page_content for doc in docs)

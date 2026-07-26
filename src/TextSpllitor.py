@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from typing import Any
 
 try:
-    from langchain_core.documents import Document
-    from langchain_core.text_splitter import RecursiveCharacterTextSplitter
+    from langchain.schema import Document
+    from langchain.text_splitter import RecursiveCharacterTextSplitter
 except ModuleNotFoundError:
     @dataclass
     class Document:

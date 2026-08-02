@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeBot</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    
+    <div class="create-login-box">
+        <h1>Create Demo Account </h1>
+        <div class="input-box">
+            <input type="text" name="name" id="user-name" placeholder="Enter user name" required>
+            <input type="text" name="email" id="user-email" placeholder="Enter user email" required>
+            <input type="password" name="password" id="user-password" placeholder="Enter user password" required>
+            <button id="user-auth">Submit</button>
+        </div>
+    </div>
+    
+    <script>
+        const authButton = document.getElementById('user-auth');
+        authButton.addEventListener('click', (e) => {
+            e.preventDefault()
+
+            const name = document.getElementById("user-name").value
+            const email = document.getElementById('user-email').value;
+            const password = document.getElementById('user-password').value;
+
+            const user_data = {
+                name: name,
+                email:email,
+                password: password
+            }
+
+            fetch("/login", {
+
+                method: "post",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(user_data)
+            })
+            .then(response => response.json())
+            .then(result=>{
+                alert(result.message)
+            })
+
+            
+            
+        });
+    </script>
+</body>
+</html>

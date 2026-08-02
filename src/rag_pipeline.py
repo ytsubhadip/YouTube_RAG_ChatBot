@@ -14,7 +14,7 @@ from .Youtube_extractor import extract_video_text
 from .TextSpllitor import prepare_transcript_for_vectorstore
 
 DEFAULT_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-DEFAULT_OLLAMA_MODEL = "llama3.1:8b"
+DEFAULT_OLLAMA_MODEL = "llama3.2"
 DEFAULT_K = 4
 
 PROMPT_TEMPLATE = """You are a helpful assistant grounded in the supplied transcript context.
